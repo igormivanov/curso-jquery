@@ -35,13 +35,17 @@ function inicializaCronometro(){
             tempoRestante--;
             $("#tempo-digitacao").text(tempoRestante);
             if(tempoRestante < 1){
-                campo.attr("disabled", true);
                 clearInterval(cronometroID);
-                //campo.css("background-color", "lightgray");
-                campo.toggleClass("campo-desativado");
+                finalizaJogo();
             }
         }, 1000);
     });
+}
+
+function finalizaJogo(){
+    campo.attr("disabled", true);
+    campo.toggleClass("campo-desativado");
+    inserePlacar();
 }
 
 function inicializaMarcadores(){
@@ -60,6 +64,46 @@ function inicializaMarcadores(){
     });
 }
 
+function inserePlacar() {
+    var corpoTabela = $(".placar").find("tbody");
+    var usuario = "Igor"
+    var numPalavras = $("#contador-palavras").text();
+    var botaoRemover = "<a href='#'><i class='small material-icons'>delete</i></a>" ;
+
+    var linha = novaLinha(usuario,numPalavras);
+    linha.find(".botao-remover").click(removeLinha);
+
+    corpoTabela.append(linha);
+}
+
+function novaLinha(usuario,palavras){
+    var linha = $("<tr>");
+    var colunaUsuario = $("<td>").text(usuario);
+    var colunaPalavras = $("<td>").text(palavras);
+    var colunaRemover = $("<td>");
+
+    var link = $("<a>").attr("href","#").addClass("botao-remover");
+    var icone = $("<i>").addClass("small").addClass("material-icons").text("delete");
+
+    // Icone dentro do <a>
+    link.append(icone);
+
+    // <a> dentro do <td>
+    colunaRemover.append(link);
+
+    // Os três <td> dentro do <tr>
+    linha.append(colunaUsuario);
+    linha.append(colunaPalavras);
+    linha.append(colunaRemover);
+
+    return linha;
+}
+
+function removeLinha(event){
+        event.preventDefault();
+        $(this).parent().parent().remove();
+}
+
 function reiniciaJogo(){
     $("#botao-reiniciar").click(function(){
         campo.attr("disabled", false);
@@ -73,4 +117,6 @@ function reiniciaJogo(){
         campo.removeClass("borda-verde");
     });
 }
+
+
 
